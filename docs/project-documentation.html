@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NetSec Visual Analyzer - Project Documentation</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #07111b;
+        --panel: #0c1825;
+        --panel-2: #102231;
+        --text: #e6f3ff;
+        --muted: #9cb4c8;
+        --accent: #47d7ff;
+        --accent-2: #76a8ff;
+        --border: rgba(71, 215, 255, 0.18);
+        --code-bg: #09131d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 40px 28px 56px;
+        background:
+          radial-gradient(circle at top right, rgba(71, 215, 255, 0.14), transparent 28%),
+          radial-gradient(circle at bottom left, rgba(118, 168, 255, 0.11), transparent 24%),
+          var(--bg);
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.55;
+      }
+
+      .page {
+        max-width: 1020px;
+        margin: 0 auto;
+        background: rgba(12, 24, 37, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+      }
+
+      header {
+        padding: 36px 36px 28px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(135deg, rgba(71, 215, 255, 0.12), rgba(118, 168, 255, 0.04));
+      }
+
+      h1, h2, h3 {
+        line-height: 1.15;
+        margin: 0 0 12px;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+        letter-spacing: -0.03em;
+      }
+
+      h2 {
+        font-size: 1.35rem;
+        margin-top: 0;
+      }
+
+      h3 {
+        font-size: 1rem;
+        margin-top: 0;
+      }
+
+      p {
+        margin: 0 0 14px;
+        color: var(--text);
+      }
+
+      .subtitle {
+        color: var(--muted);
+        max-width: 74ch;
+      }
+
+      main {
+        padding: 28px 36px 40px;
+      }
+
+      section {
+        margin-bottom: 28px;
+        padding: 22px;
+        background: rgba(16, 34, 49, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+      }
+
+      ul, ol {
+        margin: 0 0 14px 20px;
+        padding: 0;
+        color: var(--text);
+      }
+
+      li {
+        margin: 0 0 8px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 14px;
+        background: rgba(7, 17, 27, 0.7);
+        border: 1px solid rgba(71, 215, 255, 0.14);
+      }
+
+      .label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--accent);
+        margin-bottom: 8px;
+      }
+
+      code, pre {
+        font-family: Consolas, 'Liberation Mono', Menlo, monospace;
+        font-size: 0.9rem;
+      }
+
+      pre {
+        margin: 14px 0 0;
+        padding: 16px;
+        overflow: auto;
+        background: var(--code-bg);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        color: #dbeeff;
+        white-space: pre-wrap;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+        overflow: hidden;
+      }
+
+      .table th,
+      .table td {
+        text-align: left;
+        vertical-align: top;
+        padding: 12px 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .table th {
+        color: var(--accent);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .note {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-left: 3px solid var(--accent);
+        background: rgba(71, 215, 255, 0.06);
+        color: var(--text);
+      }
+
+      .small {
+        font-size: 0.95rem;
+      }
+
+      .footer {
+        padding: 0 36px 32px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      @media print {
+        body {
+          padding: 0;
+          background: #fff;
+        }
+
+        .page {
+          border: none;
+          border-radius: 0;
+          box-shadow: none;
+          background: #fff;
+          color: #111;
+        }
+
+        header, section {
+          break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div class="label">Project Documentation</div>
+        <h1>NetSec Visual Analyzer</h1>
+        <p class="subtitle">
+          A React and TypeScript dashboard for DNS security analysis, side-by-side domain comparison, threat-intel review,
+          and audit-history tracking. The app uses Vite, TanStack Router, React Query, Blink UI, and a custom DNS / threat
+          intelligence pipeline.
+        </p>
+      </header>
+
+      <main>
+        <section>
+          <h2>Overview</h2>
+          <p>
+            The project is a single-page application that helps analysts inspect the security posture of a domain, compare
+            two domains, review threat-intelligence indicators, and inspect previous scans. The main app entrypoint wires
+            together authentication, query caching, routing, and the Blink UI theme.
+          </p>
+          <div class="grid">
+            <div class="card">
+              <div class="label">Primary goals</div>
+              <ul>
+                <li>Analyze DNS posture for a domain in real time.</li>
+                <li>Compare two domains and score their security controls.</li>
+                <li>Inspect OpenPhish-based threat intel and domain risk signals.</li>
+                <li>Persist and review local audit history.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="label">Core stack</div>
+              <ul>
+                <li>Vite, React, and TypeScript.</li>
+                <li>TanStack Router and TanStack Query.</li>
+                <li>Tailwind CSS and Blink UI components.</li>
+                <li>React Three Fiber for the 3D globe visualization.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Project Structure</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Path</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>src/main.tsx</td>
+                <td>Bootstraps React, Blink providers, React Query, and global UI theme.</td>
+              </tr>
+              <tr>
+                <td>src/App.tsx</td>
+                <td>Defines the route tree and mounts the main layout with the toaster.</td>
+              </tr>
+              <tr>
+                <td>src/components/DashboardLayout.tsx</td>
+                <td>Application shell with sidebar navigation, auth-aware footer, and page chrome.</td>
+              </tr>
+              <tr>
+                <td>src/components/NetworkGlobe.tsx</td>
+                <td>3D globe scene used on the dashboard for visual context.</td>
+              </tr>
+              <tr>
+                <td>src/pages/*.tsx</td>
+                <td>Route-level screens for the dashboard, comparison view, threat intel, and audit history.</td>
+              </tr>
+              <tr>
+                <td>src/lib/*.ts</td>
+                <td>DNS analysis, threat-intel enrichment, and LocalStorage history helpers.</td>
+              </tr>
+              <tr>
+                <td>vite.config.ts</td>
+                <td>Vite setup with the <code>@</code> alias and the local dev server configuration.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h2>Application Flow</h2>
+          <ol>
+            <li>The browser loads <code>src/main.tsx</code>, which configures Query, Blink auth, and the UI provider.</li>
+            <li><code>src/App.tsx</code> mounts the TanStack router and routes everything through <code>DashboardLayout</code>.</li>
+            <li>The user visits one of four route-level pages: dashboard, compare, threats, or history.</li>
+            <li>DNS and threat-intel requests are issued from the page layer using helper functions in <code>src/lib</code>.</li>
+            <li>Results are rendered in Blink UI cards, tables, charts, and the 3D globe, then audit events are stored locally.</li>
+          </ol>
+          <div class="note small">
+            The app is entirely client-side. Audit history is persisted in LocalStorage under the key
+            <code>netsec.audit.history.v1</code>.
+          </div>
+        </section>
+
+        <section>
+          <h2>Routes and Screens</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Route</th>
+                <th>Page</th>
+                <th>Behavior</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>/</td>
+                <td>DashboardPage</td>
+                <td>Runs a DNS security scan for one domain and presents score, findings, charts, and the globe view.</td>
+              </tr>
+              <tr>
+                <td>/compare</td>
+                <td>ComparePage</td>
+                <td>Runs two security analyses and compares scores, findings, and record-level results side by side.</td>
+              </tr>
+              <tr>
+                <td>/threats</td>
+                <td>ThreatsPage</td>
+                <td>Loads OpenPhish feed data, summarizes threat volume, and performs domain-level threat lookups.</td>
+              </tr>
+              <tr>
+                <td>/history</td>
+                <td>HistoryPage</td>
+                <td>Shows scan history with timestamps, scores, status, search, refresh, and clear controls.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h2>Key Modules</h2>
+          <div class="grid">
+            <div class="card">
+              <h3>src/lib/dns.ts</h3>
+              <p class="muted">
+                Resolves DNS records through Cloudflare DNS-over-HTTPS, evaluates SPF, DMARC, and DNSSEC, and returns a
+                normalized analysis object with a 0-100 score and findings list.
+              </p>
+            </div>
+            <div class="card">
+              <h3>src/lib/threatIntel.ts</h3>
+              <p class="muted">
+                Pulls OpenPhish feed data, classifies items, estimates confidence, derives RDAP metadata, and builds a
+                richer domain threat profile used by the threat intelligence page.
+              </p>
+            </div>
+            <div class="card">
+              <h3>src/lib/history.ts</h3>
+              <p class="muted">
+                Stores recent scan and comparison events in LocalStorage, de-duplicates recent duplicates, and caps the
+                stored history at 100 records.
+              </p>
+            </div>
+            <div class="card">
+              <h3>src/components/NetworkGlobe.tsx</h3>
+              <p class="muted">
+                Renders a rotating 3D sphere with animated points and stars using React Three Fiber and Drei.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Important UI Behavior</h2>
+          <ul>
+            <li>The dashboard defaults to scanning <code>google.com</code> until the user submits another domain.</li>
+            <li>Comparison mode refuses empty or identical domains and records the comparison in audit history.</li>
+            <li>Threat lookups fall back to a static sample snapshot if the live feed is unavailable.</li>
+            <li>The layout shows a sign-in or sign-out control depending on Blink authentication state.</li>
+            <li>Toasts are used for validation errors and scan failures.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Build and Development</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Script</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>npm run dev</td>
+                <td>Starts the Vite dev server on port 3000.</td>
+              </tr>
+              <tr>
+                <td>npm run build</td>
+                <td>Creates the production build.</td>
+              </tr>
+              <tr>
+                <td>npm run preview</td>
+                <td>Serves the production build locally.</td>
+              </tr>
+              <tr>
+                <td>npm run lint</td>
+                <td>Runs type, JavaScript, CSS, and CSS variable checks.</td>
+              </tr>
+              <tr>
+                <td>npm run check:css-vars</td>
+                <td>Validates Tailwind CSS variable references against src/index.css.</td>
+              </tr>
+            </tbody>
+          </table>
+          <pre># Development
+npm install
+npm run dev
+
+# Production build
+npm run build
+
+# Local preview
+npm run preview</pre>
+        </section>
+
+        <section>
+          <h2>Dependencies Worth Knowing</h2>
+          <ul>
+            <li><code>@blinkdotnew/ui</code> and <code>@blinkdotnew/react</code> provide the design system and auth integration.</li>
+            <li><code>@tanstack/react-router</code> handles routing and nested layout composition.</li>
+            <li><code>@tanstack/react-query</code> provides data fetching, caching, and refetching.</li>
+            <li><code>@react-three/fiber</code>, <code>@react-three/drei</code>, and <code>three</code> power the globe scene.</li>
+            <li><code>lucide-react</code> supplies iconography throughout the dashboard.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Notes and Constraints</h2>
+          <ul>
+            <li>The DNS and threat-intel features depend on network access.</li>
+            <li>The app expects a Blink project ID in <code>VITE_BLINK_PROJECT_ID</code> for auth features.</li>
+            <li>Audit history only persists in the current browser profile because it is LocalStorage-backed.</li>
+            <li><code>Shell.tsx</code> and <code>src/layouts/shared-app-layout.tsx</code> are present as layout utilities, but the active app flow currently uses <code>DashboardLayout</code>.</li>
+          </ul>
+        </section>
+      </main>
+
+      <div class="footer">
+        Generated from the current workspace source files in the netsec-visual-analyzer project.
+      </div>
+    </div>
+  </body>
+</html>

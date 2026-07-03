@@ -1,0 +1,96 @@
+@import '@blinkdotnew/ui/styles';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 30% 7%;
+    --foreground: 210 20% 98%;
+    --card: 222 30% 12%;
+    --card-foreground: 210 20% 98%;
+    --popover: 222 30% 12%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 190 100% 50%; /* Cyan Neon */
+    --primary-foreground: 220 30% 7%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 190 100% 50%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 190 100% 50%;
+    --radius: 0.75rem;
+    --sidebar-background: 220 30% 5%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 190 100% 50%;
+    --sidebar-primary-foreground: 220 30% 7%;
+    --sidebar-accent: 217 32% 17%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 217 32% 17%;
+    --sidebar-ring: 190 100% 50%;
+  }
+
+  * {
+    @apply border-border;
+  }
+  
+  html, body, #root {
+    @apply h-full;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+.cyber-grid {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+.neon-glow {
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+}
+
+.neon-text {
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+
+.glass-card {
+  @apply bg-card/40 backdrop-blur-md border border-white/5;
+}
+
+/* Chart Customization */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: rgba(0, 255, 255, 0.05);
+}
+
+.recharts-default-tooltip {
+  @apply !bg-background/90 !border-cyan-500/20 !rounded-lg !backdrop-blur-xl !shadow-2xl !p-3;
+}
+
+.recharts-tooltip-label {
+  @apply !text-cyan-400 !font-mono !text-xs !mb-1 !uppercase !tracking-widest;
+}
+
+.recharts-tooltip-item {
+  @apply !text-foreground !text-xs !font-bold;
+}
+
+.recharts-area-area {
+  fill: url(#colorValue);
+  fill-opacity: 0.1;
+}
+
+.recharts-bar-rectangle {
+  filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.2));
+}
