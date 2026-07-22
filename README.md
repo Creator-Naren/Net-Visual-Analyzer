@@ -514,7 +514,7 @@ npm run lint:css      # Stylesheet lint
 
 ---
 
-### 👥 Made with ❤️ by Security Analysts & Developers
+### 👥 Made with ❤️ by Narendra Borhade.
 
 Questions? Open a [GitHub issue](https://github.com/Creator-Naren/Net-Visual-Analyzer/issues) or start a [discussion](https://github.com/Creator-Naren/Net-Visual-Analyzer/discussions).
 
