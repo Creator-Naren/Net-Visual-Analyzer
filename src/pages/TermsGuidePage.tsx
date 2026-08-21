@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Page,
   PageHeader,
@@ -10,8 +10,9 @@ import {
   CardTitle,
   CardContent,
   Badge,
+  Input,
 } from '@blinkdotnew/ui'
-import { BookOpenText, BarChart3, ShieldCheck, AlertTriangle, Database } from 'lucide-react'
+import { BookOpenText, BarChart3, ShieldCheck, AlertTriangle, Database, Search } from 'lucide-react'
 
 type TermRow = {
   term: string
@@ -159,7 +160,22 @@ const formulaRows = [
   },
 ]
 
-function TermsTable({ rows }: { rows: TermRow[] }) {
+function TermsTable({ rows, filter }: { rows: TermRow[]; filter: string }) {
+  const filtered = rows.filter(
+    (r) =>
+      r.term.toLowerCase().includes(filter.toLowerCase()) ||
+      r.meaning.toLowerCase().includes(filter.toLowerCase()) ||
+      r.howToRead.toLowerCase().includes(filter.toLowerCase()),
+  )
+
+  if (filtered.length === 0) {
+    return (
+      <div className="p-4 text-center text-xs text-muted-foreground">
+        No terms match "{filter}".
+      </div>
+    )
+  }
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[680px]">
@@ -171,11 +187,11 @@ function TermsTable({ rows }: { rows: TermRow[] }) {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr key={row.term} className="border-t border-white/5 align-top">
-              <td className="px-4 py-3 text-sm font-mono text-cyan-300">{row.term}</td>
-              <td className="px-4 py-3 text-sm text-muted-foreground">{row.meaning}</td>
-              <td className="px-4 py-3 text-sm">{row.howToRead}</td>
+          {filtered.map((row) => (
+            <tr key={row.term} className="border-t border-white/5 align-top hover:bg-white/5 transition-colors">
+              <td className="px-4 py-3 text-sm font-mono text-cyan-300 font-bold">{row.term}</td>
+              <td className="px-4 py-3 text-sm text-muted-foreground leading-relaxed">{row.meaning}</td>
+              <td className="px-4 py-3 text-sm leading-relaxed">{row.howToRead}</td>
             </tr>
           ))}
         </tbody>
@@ -185,17 +201,32 @@ function TermsTable({ rows }: { rows: TermRow[] }) {
 }
 
 export function TermsGuidePage() {
+  const [searchTerm, setSearchTerm] = useState('')
+
   return (
     <Page>
       <PageHeader>
-        <div className="flex flex-col gap-3">
-          <PageTitle className="text-4xl font-black neon-text flex items-center gap-2">
-            <BookOpenText className="w-8 h-8 text-cyan-400" />
-            Terms & Metrics Guide
-          </PageTitle>
-          <PageDescription className="text-muted-foreground/80 max-w-3xl">
-            Understand what every graph and table means, how each metric is calculated, and how to interpret risk levels consistently.
-          </PageDescription>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
+          <div>
+            <PageTitle className="text-4xl font-black neon-text flex items-center gap-2">
+              <BookOpenText className="w-8 h-8 text-cyan-400" />
+              Terms & Metrics Guide
+            </PageTitle>
+            <PageDescription className="text-muted-foreground/80 max-w-3xl mt-1">
+              Understand what every graph and table means, how each metric is calculated, and how to interpret risk levels consistently.
+            </PageDescription>
+          </div>
+
+          <div className="relative w-full md:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-cyan-400" />
+            <Input
+              type="text"
+              placeholder="Search glossary terms..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9 bg-card/60 border-cyan-500/20 focus:border-cyan-400 text-xs"
+            />
+          </div>
         </div>
       </PageHeader>
 
@@ -228,7 +259,7 @@ export function TermsGuidePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <TermsTable rows={dashboardTerms} />
+            <TermsTable rows={dashboardTerms} filter={searchTerm} />
           </CardContent>
         </Card>
 
@@ -240,7 +271,7 @@ export function TermsGuidePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <TermsTable rows={threatTerms} />
+            <TermsTable rows={threatTerms} filter={searchTerm} />
           </CardContent>
         </Card>
 
@@ -252,7 +283,7 @@ export function TermsGuidePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <TermsTable rows={compareTerms} />
+            <TermsTable rows={compareTerms} filter={searchTerm} />
           </CardContent>
         </Card>
 
@@ -264,7 +295,7 @@ export function TermsGuidePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <TermsTable rows={graphVocabularyTerms} />
+            <TermsTable rows={graphVocabularyTerms} filter={searchTerm} />
           </CardContent>
         </Card>
 
@@ -276,12 +307,12 @@ export function TermsGuidePage() {
             {formulaRows.map((row) => (
               <div key={row.title} className="rounded-md border border-cyan-500/15 p-3 bg-black/20">
                 <div className="flex items-center gap-2 mb-1">
-                  <Badge variant="outline" className="font-mono text-[10px] uppercase">
+                  <Badge variant="outline" className="font-mono text-[10px] uppercase border-cyan-500/30 text-cyan-300">
                     Formula
                   </Badge>
                   <h3 className="text-sm font-semibold">{row.title}</h3>
                 </div>
-                <p className="text-sm text-muted-foreground">{row.detail}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{row.detail}</p>
               </div>
             ))}
           </CardContent>

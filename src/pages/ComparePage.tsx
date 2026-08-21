@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Page, PageHeader, PageTitle, PageDescription, PageBody, Button, Input, Card, CardHeader, CardTitle, CardContent, Badge, DataTable, toast } from '@blinkdotnew/ui'
-import { Globe, AlertTriangle, Zap, ArrowRightLeft, CheckCircle2, XCircle } from 'lucide-react'
+import { Globe, AlertTriangle, Zap, ArrowRightLeft, CheckCircle2, XCircle, Sparkles, Download } from 'lucide-react'
 import { BarChart } from '@blinkdotnew/ui'
 import { useQuery } from '@tanstack/react-query'
 import { analyzeSecurity } from '../lib/dns'
@@ -15,6 +15,13 @@ function findingToScore(status?: string): number {
 function recordDensityScore(count: number): number {
   return Math.min(100, count * 20)
 }
+
+
+const COMPARISON_PRESETS = [
+  { name: 'Google vs Cloudflare', a: 'google.com', b: 'cloudflare.com' },
+  { name: 'GitHub vs GitLab', a: 'github.com', b: 'gitlab.com' },
+  { name: 'Microsoft vs Apple', a: 'microsoft.com', b: 'apple.com' },
+]
 
 export function ComparePage() {
   const [site1, setSite1] = useState('')
@@ -73,6 +80,28 @@ export function ComparePage() {
       status,
     })
   }, [isComparing, dataA, dataB])
+
+  const handlePresetSelect = (a: string, b: string) => {
+    setSite1(a)
+    setSite2(b)
+  }
+
+  const exportComparisonCsv = () => {
+    if (!dataA || !dataB) return
+    const headers = ['Metric', dataA.domain, dataB.domain, 'Winner']
+    const csvRows = [
+      headers.join(','),
+      `"Security Score",${dataA.score},${dataB.score},"${dataA.score > dataB.score ? dataA.domain : dataB.score > dataA.score ? dataB.domain : 'TIE'}"`,
+      ...comparisonRows.map((r: any) => `"${r.check}","${r.siteA}","${r.siteB}","-"`)
+    ]
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `netsec-compare-${dataA.domain}-vs-${dataB.domain}.csv`
+    a.click()
+    toast.success('Exported comparison CSV')
+  }
 
   const isLoading = isLoadingA || isLoadingB
   const isError = isErrorA || isErrorB
@@ -183,6 +212,20 @@ export function ComparePage() {
         </div>
       </PageHeader>
       
+      {/* Comparison Preset Chips */}
+      <div className="flex flex-wrap items-center gap-2 text-xs -mt-4 mb-4">
+        <span className="text-muted-foreground font-mono uppercase text-[10px] tracking-wider">Preset Pairs:</span>
+        {COMPARISON_PRESETS.map((p) => (
+          <button
+            key={p.name}
+            onClick={() => handlePresetSelect(p.a, p.b)}
+            className="px-2.5 py-1 rounded-full border text-[11px] font-mono transition-all bg-black/20 text-muted-foreground border-white/10 hover:border-cyan-500/30 hover:text-cyan-300"
+          >
+            {p.name}
+          </button>
+        ))}
+      </div>
+
       <PageBody className="space-y-8 animate-fade-in pb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-4">

@@ -224,12 +224,12 @@ async function fetchRdapProfile(domain: string): Promise<{
 
     const payload = await response.json()
     const events = Array.isArray(payload?.events) ? payload.events : []
-    const registrationDate = events.find((event) => event?.eventAction === 'registration')?.eventDate ?? null
-    const expirationDate = events.find((event) => event?.eventAction === 'expiration')?.eventDate ?? null
+    const registrationDate = events.find((event: any) => event?.eventAction === 'registration')?.eventDate ?? null
+    const expirationDate = events.find((event: any) => event?.eventAction === 'expiration')?.eventDate ?? null
     const registrar =
       Array.isArray(payload?.entities) && payload.entities.length > 0
-        ? payload.entities.find((entity) => entity?.roles?.includes('registrar'))?.vcardArray?.[1]?.find(
-            (entry) => Array.isArray(entry) && entry[0] === 'fn',
+        ? payload.entities.find((entity: any) => entity?.roles?.includes('registrar'))?.vcardArray?.[1]?.find(
+            (entry: any) => Array.isArray(entry) && entry[0] === 'fn',
           )?.[3] ?? null
         : null
 
