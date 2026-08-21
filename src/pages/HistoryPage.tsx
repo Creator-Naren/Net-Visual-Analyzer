@@ -1,10 +1,10 @@
-import React from 'react'
-import { Page, PageHeader, PageTitle, PageDescription, PageBody, DataTable, Badge, Button } from '@blinkdotnew/ui'
-import { Globe, Clock, CheckCircle2, AlertTriangle, XCircle, RefreshCw, Trash2 } from 'lucide-react'
+import React, { useState } from 'react'
+import { Page, PageHeader, PageTitle, PageDescription, PageBody, DataTable, Badge, Button, toast } from '@blinkdotnew/ui'
+import { Globe, Clock, CheckCircle2, AlertTriangle, XCircle, RefreshCw, Trash2, Download, FileSpreadsheet } from 'lucide-react'
 import { clearAuditHistory, getAuditHistory, type AuditHistoryItem } from '../lib/history'
 
 export function HistoryPage() {
-  const [rows, setRows] = React.useState<AuditHistoryItem[]>([])
+  const [rows, setRows] = useState<AuditHistoryItem[]>([])
 
   const loadRows = React.useCallback(() => {
     setRows(getAuditHistory())
@@ -17,6 +17,22 @@ export function HistoryPage() {
   const handleClear = () => {
     clearAuditHistory()
     loadRows()
+    toast.success('Audit history cleared')
+  }
+
+  const exportHistoryJson = () => {
+    if (!rows.length) {
+      toast.error('No audit records to export')
+      return
+    }
+    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(rows, null, 2))}`
+    const downloadAnchor = document.createElement('a')
+    downloadAnchor.setAttribute('href', jsonString)
+    downloadAnchor.setAttribute('download', `netsec-audit-history.json`)
+    document.body.appendChild(downloadAnchor)
+    downloadAnchor.click()
+    downloadAnchor.remove()
+    toast.success('Exported audit history JSON')
   }
 
   const formatTimestamp = (isoDate: string) => {
@@ -38,20 +54,24 @@ export function HistoryPage() {
               Review past DNS security audits and comparison reports.
             </PageDescription>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" className="gap-2" onClick={loadRows}>
-              <RefreshCw className="w-4 h-4" />
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="outline" className="gap-2 text-xs" onClick={exportHistoryJson}>
+              <Download className="w-3.5 h-3.5" />
+              Export
+            </Button>
+            <Button variant="outline" className="gap-2 text-xs" onClick={loadRows}>
+              <RefreshCw className="w-3.5 h-3.5" />
               Refresh
             </Button>
-            <Button variant="outline" className="gap-2 text-red-400 border-red-500/20" onClick={handleClear}>
-              <Trash2 className="w-4 h-4" />
+            <Button variant="outline" className="gap-2 text-xs text-red-400 border-red-500/20" onClick={handleClear}>
+              <Trash2 className="w-3.5 h-3.5" />
               Clear
             </Button>
           </div>
         </div>
       </PageHeader>
       
-      <PageBody className="animate-fade-in">
+      <PageBody className="animate-fade-in space-y-4">
         <DataTable 
           columns={[
             { 
@@ -59,7 +79,7 @@ export function HistoryPage() {
               header: 'Audit Time',
               cell: ({ row }) => (
                 <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
-                  <Clock className="w-3 h-3" />
+                  <Clock className="w-3 h-3 text-cyan-400" />
                   {formatTimestamp(row.original.timestamp)}
                 </div>
               )
@@ -69,7 +89,7 @@ export function HistoryPage() {
               header: 'Target Domain',
               cell: ({ row }) => (
                 <div className="flex items-center gap-2 font-bold text-cyan-400">
-                  <Globe className="w-4 h-4" />
+                  <Globe className="w-4 h-4 text-cyan-300" />
                   {row.original.domain}
                 </div>
               )
@@ -78,7 +98,7 @@ export function HistoryPage() {
               accessorKey: 'type', 
               header: 'Audit Type',
               cell: ({ row }) => (
-                <Badge variant="outline" className="text-[10px] font-mono border-white/10 uppercase tracking-widest px-1.5 h-5">
+                <Badge variant="outline" className="text-[10px] font-mono border-cyan-500/20 text-cyan-300 uppercase tracking-widest px-2 h-5">
                   {row.original.type}
                 </Badge>
               )
@@ -88,8 +108,8 @@ export function HistoryPage() {
               header: 'Security Score',
               cell: ({ row }) => {
                 const score = row.original.score
-                const color = score >= 90 ? 'text-green-400' : score >= 70 ? 'text-amber-400' : 'text-red-400'
-                return <span className={`font-black ${color} drop-shadow-[0_0_8px_rgba(0,255,255,0.2)]`}>{score}</span>
+                const color = score >= 80 ? 'text-green-400' : score >= 60 ? 'text-amber-400' : 'text-red-400'
+                return <span className={`font-black ${color} drop-shadow-[0_0_8px_rgba(0,255,255,0.2)]`}>{score} / 100</span>
               }
             },
             { 

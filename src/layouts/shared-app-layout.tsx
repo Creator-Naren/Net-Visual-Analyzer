@@ -4,7 +4,6 @@
  */
 import React, { createContext, useContext } from 'react'
 import { Shell } from '../Shell'
-import { AppSidebarShell } from '../components/AppSidebarShell'
 
 export type SharedLayoutContextValue = {
   appName: string
@@ -23,14 +22,13 @@ export function useSharedLayout(): SharedLayoutContextValue {
 
 export type SharedAppLayoutProps = {
   appName?: string
-  /** Override default sidebar; keep same flex structure as AppSidebarShell */
   sidebar?: React.ReactNode
   children: React.ReactNode
 }
 
 export function SharedAppLayout({
   appName = 'App',
-  sidebar = <AppSidebarShell />,
+  sidebar,
   children,
 }: SharedAppLayoutProps) {
   const value = React.useMemo(() => ({ appName }), [appName])
